@@ -1,4 +1,5 @@
 const Ad = require("../models/Ad");
+const User = require("../models/User");
 
 async function getThree () {
     return Ad.find({}).limit(3).lean();
@@ -44,6 +45,13 @@ async function apply(userId, adId) {
     await ad.save();
 }
 
+async function getByEmail (email) {
+    email = new RegExp(email, 'i');
+    const user = await User.find({ 'email': email });
+
+    return Ad.find({ 'owner' : user }).lean();
+}
+
 module.exports = {
     getThree,
     getAll,
@@ -52,5 +60,6 @@ module.exports = {
     createAd,
     editAd,
     deleteAd,
-    apply
+    apply,
+    getByEmail
 }

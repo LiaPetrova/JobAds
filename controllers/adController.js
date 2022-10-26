@@ -1,6 +1,6 @@
 const { hasUser, isOwner } = require('../middlewares/guards');
 const preload = require('../middlewares/preload');
-const { createAd, getAll, getById, apply, editAd, deleteAd } = require('../services/adService');
+const { createAd, getAll, getById, apply, editAd, deleteAd, getByEmail } = require('../services/adService');
 const { parseError } = require('../util/parser');
 
 const adController = require('express').Router();
@@ -109,6 +109,16 @@ adController.get('/:id/apply', hasUser(), preload(true), async (req, res) => {
             errors: parseError(error)
         });
     }
+});
+
+adController.get('/search', hasUser(), async (req, res) => {
+    const search = req.query.search;
+    const result = await getByEmail(search);
+    
+    res.render('search', {
+        title: 'Search results',
+        result
+    });
 });
 
 
